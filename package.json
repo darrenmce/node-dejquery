@@ -1,0 +1,14 @@
+{
+    "name": "node-dejquery",
+    "version": "0.0.1",
+    "description": " Node library to replace simple jQuery reference with plain Javascript",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "",
+    "license": "BSD-2-Clause",
+    "dependencies": {
+        "uglify-js" : "1.3.5"
+    }
+}
