@@ -1,7 +1,7 @@
 var def = require('./funcs.js');
 
 var jQuery = '$';
-var allJQ = ['jQselect', 'jQDotcall', 'jQcallDot', 'jQwrapper', 'jQvar'];
+var allJQ = ['jQselect', 'jQDotcall', 'jQcallDot', 'jQwrapper', 'jQvar', 'jQhtml'];
 
 
 var parse1Patterns = {

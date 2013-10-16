@@ -2,7 +2,9 @@ var fs = require('fs');
 var jsp = require('uglify-js').parser;
 var pro = require('uglify-js').uglify;
 
+//pattern module
 var patt = require('./patterns.js');
+//dejquery funcs
 var djq = require('./dejquery.js');
 
 
@@ -12,7 +14,10 @@ var testFile = String(fs.readFileSync('testJs/content.js'));
 //parse into AST
 var ast = jsp.parse(testFile);
 
+console.log('Original AST: ' + JSON.stringify(ast));
 
+
+//markup AST with
 djq.traverse(ast, function (node) {
     for (var library in patt.pattern1) {
         patt.pattern1[library].forEach(function (pattern) {
@@ -23,12 +28,13 @@ djq.traverse(ast, function (node) {
     }
 }, true);
 
-console.log(JSON.stringify(ast));
+
+console.log('Markup AST: ' + JSON.stringify(ast));
 
 //de-chain
 djq.chainTraverse(ast, false, []);
 
-console.log(JSON.stringify(ast));
+console.log('Break Chains: ' + JSON.stringify(ast));
 
 djq.traverse(ast, function (node) {
     for (var library in patt.pattern2) {
@@ -40,6 +46,8 @@ djq.traverse(ast, function (node) {
     }
 }, false);
 
-console.log(JSON.stringify(ast));
+console.log('De-Jqueried: '+JSON.stringify(ast));
 
+
+console.log('New Code:');
 console.log(pro.gen_code(ast, {beautify: true}));

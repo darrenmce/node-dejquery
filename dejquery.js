@@ -3,6 +3,7 @@ var def = require('./funcs.js');
 var dejquery = {
     //counter for temporary variables
     varcounter: 0,
+
     //generic recursive traverse/visit
     traverse: function (node, visit, after) {
         var self = this;
@@ -20,22 +21,30 @@ var dejquery = {
         }
     },
 
+    //recursive method to replace jquery-relying chaining statements ['stat',[jQcallDot...]] with [var base], [base.method1], [base.method2], ... [base.methodN]
     chainTraverse: function (node, base, newRoot, parent, index, tempvar) {
         var self = this;
 
         var isRoot = false;
+
         if (node instanceof Array) {
             var _base = base;
             var _newRoot = newRoot;
             var _tempvar = tempvar;
-            if (node[0] === 'stat' && node[1] && node[1][0] === 'jQcallDot') {
 
+            //detect a jQuery statement
+            if (node[0] === 'stat' && node[1] && node[1][0] === 'jQcallDot') {
+                // mark this call as the root
                 isRoot = true;
+                // redefine the base (highest level chainable function call)
                 _base = self.getBase(node[1], false);
 
+                //ignore if the base is the same as the root call, or the first level call (chainability not needed for a first-level call)
                 if (_base !== node[1] && _base !== node[1][1][1]) {
+                    //assign a temp variable name
                     self.varcounter++;
                     _tempvar = 'djqTemp' + self.varcounter;
+                    //create the var statement - set as first element in new Root
                     _newRoot = [
                         ["jQvar", [
                             [_tempvar, _base]
@@ -44,14 +53,19 @@ var dejquery = {
                 }
             }
             if (node !== base) {
+                //traverse into
                 for (var i = 0, len = node.length; i < len; i++) {
                     self.chainTraverse(node[i], _base, _newRoot, node, i, _tempvar);
                 }
             }
         }
+
+        //post-recursion
+        //push the methods to the newRoot if applicable
         if (node && node[0] == 'jQcallDot' && newRoot.length > 0) {
             newRoot.push(["stat", ["jQcallDot", ["dot", ["name", tempvar], node[1][2]], node[2]]]);
         }
+        //on the root, replace with newRoot contents
         if (isRoot && _newRoot.length > 0) {
             //replace stat with first
             parent[index] = _newRoot[0];
@@ -63,6 +77,7 @@ var dejquery = {
 
     },
 
+    //returns the highest-level chainable call or definition
     getBase: function (node, base) {
         var self = this;
 

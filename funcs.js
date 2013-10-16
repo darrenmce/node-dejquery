@@ -1,3 +1,4 @@
+//define all the functions to refactor (either native or marked up)
 var funcDefs = {
     jquery: {
         default: {
