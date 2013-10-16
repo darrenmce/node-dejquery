@@ -19,6 +19,19 @@ var funcDefs = {
             },
             chainable: false
         },
+        append: {
+            convert: function (node) {
+                utils.renameFunc(node, 'appendChild');
+            },
+            chainable: false
+        },
+        prepend: {
+            convert: function (node) {
+                utils.renameFunc(node, 'insertBefore');
+                utils.pushParam(node,["sub",["dot",node[1][1],"childNodes"],["num",0]])
+            },
+            chainable: false
+        },
         jQselect: {
             convert: function (node) {
                 var selector = node[2][0][1];
@@ -29,7 +42,25 @@ var funcDefs = {
                 ];
             },
             chainable: true
+        },
+        jQhtml: {
+            convert: function (node) {
+                var html = node[2][0][1];
+                node[0] = "call";
+                node[1] = ["dot", ["name", "document"], "createElement"];
+                node[2] = [
+                    ["string", html]
+                ];
+            },
+            chainable: true
+        },
+        jQwrapper: {
+            convert: function(node) {
+
+            },
+            chainable: true
         }
+
     }
 }
 //helper util functions
@@ -38,6 +69,9 @@ var utils = {
     renameFunc: function (node, name) {
         node[0] = 'call';
         node[1][2] = name;
+    },
+    pushParam: function (node, param) {
+        node[2].push(param);
     }
 }
 

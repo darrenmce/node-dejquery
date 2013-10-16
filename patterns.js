@@ -12,10 +12,24 @@ var parse1Patterns = {
                 return node[0] === 'call' &&
                     node[1][0] === 'name' &&
                     node[1][1] === jQuery &&
-                    node[2][0][0] === 'string';
+                    node[2][0][0] === 'string' &&
+                    !(node[2][0][1].charAt(0) === "<" && node[2][0][1].charAt( node[2][0][1].length - 1 ) === ">" && node[2][0][1].length >= 3 )
             },
             function (node) {
                 node[0] = 'jQselect';
+            }
+        ],
+        //a jquery HTML selector/creator?
+        [
+            function (node) {
+                return node[0] === 'call' &&
+                    node[1][0] === 'name' &&
+                    node[1][1] === jQuery &&
+                    node[2][0][0] === 'string' &&
+                    (node[2][0][1].charAt(0) === "<" && node[2][0][1].charAt( node[2][0][1].length - 1 ) === ">" && node[2][0][1].length >= 3 )
+            },
+            function (node) {
+                node[0] = 'jQhtml';
             }
         ],
         //jquery element wrapper
@@ -74,6 +88,14 @@ var parse2Patterns = {
                 return node[0] === 'jQselect';
             },
             def.funcDefs.jquery.jQselect.convert
+
+        ],
+        //a jquery html call (direct)
+        [
+            function (node) {
+                return node[0] === 'jQhtml';
+            },
+            def.funcDefs.jquery.jQhtml.convert
 
         ],
         // jQuery.func
