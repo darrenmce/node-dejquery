@@ -119,7 +119,7 @@ var parse2Patterns = {
                 funcDef.convert(node);
             }
         ],
-        //a dot command on a jquery root
+        //a jQuery dot call [ ex. $.get() ]
         [
             function (node) {
                 return node[0] === 'jQDotcall';
@@ -128,7 +128,7 @@ var parse2Patterns = {
                 node[0] = 'call';
             }
         ],
-        //a dot command on a jquery root
+        //a var wrapped by jquery
         [
             function (node) {
                 return node[0] === 'jQwrapper';
