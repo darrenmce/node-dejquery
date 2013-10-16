@@ -49,7 +49,7 @@ var dejquery = {
                 }
             }
         }
-        if (node[0] == 'jQcallDot' && newRoot.length > 0) {
+        if (node && node[0] == 'jQcallDot' && newRoot.length > 0) {
             newRoot.push(["stat", ["jQcallDot", ["dot", ["name", tempvar], node[1][2]], node[2]]]);
         }
         if (isRoot && _newRoot.length > 0) {
